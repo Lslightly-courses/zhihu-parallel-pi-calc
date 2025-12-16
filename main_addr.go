@@ -82,5 +82,5 @@ func calc(numCPU int) {
 }
 
 func main() {
-	calc(1)
+	calc(20)
 }
