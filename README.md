@@ -74,3 +74,6 @@ opt plan9汇编
 
 看起来多核下base相比于base_padding也差3倍。但奇怪的是 opt 和 base_padding 还是有差别。可能的一种解释是 `localCount` 栈分配之后，需要加载的缓存就只有栈区和 `localRand` 所在的cache line，不需要加载 `localCount` 堆分配所在的缓存行，从而使得 `localRand` 函数调用时的缓存冲突减少了。
 
+### localCount堆分配对象地址
+
+`go run -tags addr .`
