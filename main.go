@@ -1,3 +1,5 @@
+//go:build !(heap || addr || padding)
+
 package main
 
 import (
@@ -11,9 +13,7 @@ import (
 
 const N = math.MaxInt32
 
-func calc() {
-	// 获取CPU核心数
-	numCPU := runtime.NumCPU()
+func calc(numCPU int) {
 	runtime.GOMAXPROCS(numCPU)
 
 	// 随机数种子
@@ -40,12 +40,12 @@ func calc() {
 		// 为每个goroutine创建独立的随机数生成器
 		localRand := rand.New(rand.NewSource(seed + int64(workerID)))
 
-		// 每次迭代创建一个 localCount，被一个 goroutine 使用（安全）
-		localCount := 0
-
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
+
+			// 每次迭代创建一个 localCount，被一个 goroutine 使用（安全）
+			localCount := 0
 			for i := start; i < end; i++ {
 				x := localRand.Float64() - 0.5
 				y := localRand.Float64() - 0.5
@@ -73,4 +73,8 @@ func calc() {
 	// 计算π的近似值
 	pi := float64(totalCount) / float64(N) * 4.0
 	fmt.Printf("π ≈ %.15f\n", pi)
+}
+
+func main() {
+	calc(1)
 }
